@@ -1,0 +1,14 @@
+#GSPathFind
+A c++ RTS 2d game engine.
+include:
+* Navmesh finding
+* Crowd Move And Collision
+* Dynamic obstacle
+
+#Demo
+Demo based on cocosv3.10
+
+#Thanks to
+[RecastNavigation](https://github.com/recastnavigation/recastnavigation)
+[godot](https://github.com/godotengine/godot)
+
