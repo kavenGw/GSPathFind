@@ -6,7 +6,7 @@ include:
 * Dynamic obstacle
 
 #Demo
-Demo based on cocosv3.10
+Demo based on Cocos V3.10
 
 #Thanks to
 [RecastNavigation](https://github.com/recastnavigation/recastnavigation)
