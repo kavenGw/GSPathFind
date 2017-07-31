@@ -20,36 +20,26 @@ GSPathFind::~GSPathFind()
 
 void GSPathFind::update(int tick)
 {
-
+    m_mesh.update(tick);
+    m_crowd.update(tick);
 }
 
-void GSPathFind::createNavMesh(const int width,const int height)
+void GSPathFind::createNavMesh(const GSNavPolygon& polygon)
 {
-
-}
-
-
-GSNavPoint GSPathFind::getClosestPoint(const GSNavPoint& point)
-{
-
+    m_mesh.init(polygon);
 }
 
 GSStatus GSPathFind::addObstacle(const GSNavPolygon& polygon,GSID& id)
 {
-    return GS_SUCCESS;
+    return m_mesh.addObstacle(polygon, id);
 }
 
 GSStatus GSPathFind::removeObstacle(const GSID id)
 {
-    return GS_SUCCESS;
+    return m_mesh.removeObstacle(id);
 }
 
-GSStatus GSPathFind::findPath(const GSNavPoint& start,const GSNavPoint &end,bool optimize)
+GSStatus GSPathFind::findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize)
 {
-    return GS_SUCCESS;
-}
-
-void GSPathFind::move(GSNavPoint &nowPos, const GSNavPoint &start, const GSNavPoint &end, int speed)
-{
-    
+    return m_mesh.findPath(start, end, paths, optimize);
 }

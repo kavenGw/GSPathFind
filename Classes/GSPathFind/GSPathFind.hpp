@@ -11,11 +11,14 @@
 
 #include <stdio.h>
 #include "GSNavData.hpp"
+#include "GSNavCrowd.hpp"
+#include "GSNavMesh.hpp"
 
 class GSPathFind
 {
 private:
-    
+    GSNavMesh m_mesh;
+    GSNavCrowd m_crowd;
 public:
     GSPathFind();
     ~GSPathFind();
@@ -23,16 +26,15 @@ public:
     //tick (ms)
     void update(int tick);
     
-    void createNavMesh(const int width,const int height);
-    
-    GSNavPoint getClosestPoint(const GSNavPoint& point);
+    void createNavMesh(const GSNavPolygon& polygon);
     
     GSStatus addObstacle(const GSNavPolygon& polygon,GSID& id);
     GSStatus removeObstacle(const GSID id);
     
-    GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,bool optimize = true);
+    GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize = true);
     
-    void move(GSNavPoint& nowPos,const GSNavPoint& start,const GSNavPoint &end,int speed);
+    
+    
 };
 
 #endif /* GSPathFind_hpp */

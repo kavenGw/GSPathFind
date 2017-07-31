@@ -13,15 +13,6 @@ void debugGSNavPoint(const GSNavPoint& point)
     printf("x:%d y:%d ",point.x,point.y);
 }
 
-void debugGSNavLine(const GSNavLine& line)
-{
-    printf("line----");
-    debugGSNavPoint(line.a);
-    debugGSNavPoint(line.b);
-    printf("w:%d h:%d",line.width(),line.height());
-    printf("--------");
-}
-
 void debugGSNavEdge(const GSNavEdge& edge)
 {
     
@@ -30,8 +21,8 @@ void debugGSNavEdge(const GSNavEdge& edge)
 void debugGSNavPolygon(const GSNavPolygon& polygon)
 {
     printf("debugGSNavPolygon---");
-    for (size_t i = 0; i < polygon.points.size(); i++) {
-        debugGSNavPoint(polygon.points[i]);
+    for (size_t i = 0; i < polygon.edges.size(); i++) {
+        debugGSNavPoint(polygon.edges[i].point);
     }
     printf("--------------------");
 }
