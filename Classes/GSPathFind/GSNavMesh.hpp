@@ -34,8 +34,6 @@ public:
     GSStatus removeObstacle(const GSID id);
     GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize = true);
     
-    inline GSPolygon getBornderPolygon(){return m_polygon;}
-private:
     std::vector<GSNavObstacle> m_navObstacles;
     std::vector<GSNavPolygon> m_polygons;
     std::map<GSNavEdgeKey, GSNavConnection> m_connections;

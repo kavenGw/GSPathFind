@@ -50,10 +50,12 @@ void GSNavMesh::update(int dt)
         std::vector<GSNavPoint> &points = obstacle.points;
         int pointsCount = points.size();
         
-        GSNavPolygon polygon;
-        polygon.center.x = 0;
-        polygon.center.y = 0;
-        m_polygons.push_back(polygon);
+        GSNavPolygon newPolygon;
+        newPolygon.center.x = 0;
+        newPolygon.center.y = 0;
+        m_polygons.push_back(newPolygon);
+        
+        GSNavPolygon &polygon = m_polygons[m_polygons.size()-1];
         
         polygon.edges.resize(pointsCount);
         

@@ -31,8 +31,8 @@ bool GSNavTestScene::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    RadioButtonGroup *group = RadioButtonGroup::create();
-    this->addChild(group);
+    _group = RadioButtonGroup::create();
+    this->addChild(_group);
     
     const int column = 7;
     
@@ -50,7 +50,7 @@ bool GSNavTestScene::init()
         
         RadioButton* button = RadioButton::create("BgFrame.png", "chip_bg.png","chip_bg.png","","");
         button->setPosition(Vec2((i % column ) * 70 + 50,(i/column) * 70 + 100));
-        group->addRadioButton(button);
+        _group->addRadioButton(button);
         
         Text *label = Text::create();
         label->setString(text);
@@ -60,8 +60,23 @@ bool GSNavTestScene::init()
         this->addChild(button);
     }
     
-    group->setSelectedButton(items.size() - 1);
-    group->addEventListener(CC_CALLBACK_3(GSNavTestScene::onChangedRadioButtonGroup1, this));
+    _group->setSelectedButton(items.size() - 1);
+    _group->addEventListener(CC_CALLBACK_3(GSNavTestScene::onChangedRadioButtonGroup1, this));
+    
+    widthTextField = TextField::create();
+    heightTextField = TextField::create();
+    
+    widthTextField->setPlaceHolder("宽");
+    heightTextField->setPlaceHolder("高");
+    
+    widthTextField->setString("50");
+    heightTextField->setString("50");
+    
+    this->addChild(widthTextField);
+    this->addChild(heightTextField);
+    
+    widthTextField->setPosition(Vec2(200,200));
+    heightTextField->setPosition(Vec2(400,200));
     
     _drawNode = DrawNode::create();
     addChild(_drawNode);
@@ -76,6 +91,12 @@ bool GSNavTestScene::init()
     
     this->scheduleUpdate();
     
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesBegan = CC_CALLBACK_2(GSNavTestScene::onTouchesBegan, this);
+    listener->onTouchesMoved = CC_CALLBACK_2(GSNavTestScene::onTouchesMoved, this);
+    listener->onTouchesEnded = CC_CALLBACK_2(GSNavTestScene::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    
     return true;
 }
 
@@ -83,6 +104,47 @@ void GSNavTestScene::update(float dt)
 {
     _GSFind.update((int)(dt * 1000));
     gsNavDrawScene(_drawNode, _GSFind.getNameMesh());
+}
+
+void GSNavTestScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{
+}
+
+void GSNavTestScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{
+}
+
+void GSNavTestScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{
+    if(touches.size() <= 0){
+        return;
+    }
+    
+    Touch* touch = touches[0];
+    Vec2 pos = touch->getLocation() - _drawNode->getPosition();
+    log("点击：%f %f",pos.x,pos.y);
+    
+    float w = atof(widthTextField->getString().c_str());
+    float h = atof(heightTextField->getString().c_str());
+    
+    int nowSelectIndex = _group->getSelectedButtonIndex();
+    
+    if(nowSelectIndex == radioTypes::eAddAgent){
+    
+    }else if(nowSelectIndex == radioTypes::eRemoveAgent){
+    
+    }else if(nowSelectIndex == radioTypes::eAddObstacle){
+        GSID id;
+        _GSFind.addObstacle((int)pos.x,(int)pos.y,(int)w,(int)h, id);
+    }else if(nowSelectIndex == radioTypes::eRemoveObstacle){
+    
+    }else if(nowSelectIndex == radioTypes::eSelect){
+    
+    }else if(nowSelectIndex == radioTypes::eSelectAll){
+    
+    }else if(nowSelectIndex == radioTypes::eMove){
+    
+    }
 }
 
 void GSNavTestScene::onChangedRadioButtonGroup1(RadioButton* radioButton, int index, cocos2d::ui::RadioButtonGroup::EventType type)
