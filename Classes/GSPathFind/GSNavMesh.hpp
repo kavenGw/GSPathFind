@@ -40,8 +40,6 @@ public:
     
     GSID next_obstacle_Id;
     
-    GSPolygon m_polygon;
-    
     GSNavMeshState m_state;
 };
 

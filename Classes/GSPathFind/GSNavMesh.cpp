@@ -23,7 +23,6 @@ GSNavMesh::~GSNavMesh()
 
 void GSNavMesh::init(const GSPolygon& polygon)
 {
-    m_polygon = polygon;
     
     m_navObstacles.clear();
     m_polygons.clear();
@@ -31,6 +30,9 @@ void GSNavMesh::init(const GSPolygon& polygon)
     
     next_obstacle_Id = 0;
     this->m_state = GSNavMeshState::eNormal;
+    
+    GSID id;
+    this->addObstacle(polygon.points, id);
 }
 
 void GSNavMesh::update(int dt)
@@ -185,7 +187,6 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
     float end_d = 1e20;
     
     //look for point inside triangle
-    
     for(size_t polygonIndex = 0 ; polygonIndex < m_polygons.size(); polygonIndex ++){
         GSNavPolygon &polygon = m_polygons[polygonIndex];
         

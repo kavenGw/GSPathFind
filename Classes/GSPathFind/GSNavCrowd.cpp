@@ -88,8 +88,12 @@ void GSNavCrowd::update(int tick)
             m_mesh->findPath(agent->m_pos, agent->m_targetPos, agent->m_paths);
             agent->m_state = GSNavAgentState::eMoving;
         }else if(agent->m_state == GSNavAgentState::eMoving){
-            if(gsMove(agent->m_pos, agent->m_targetPos, agent->m_param.m_speed*tick)){
+            if(agent->m_paths.size() == 0){
                 agent->m_state = GSNavAgentState::eFinishMove;
+            }else{
+                if(gsMove(agent->m_pos, agent->m_paths[0], agent->m_param.m_speed*tick)){
+                    agent->m_paths.erase(agent->m_paths.begin());
+                }
             }
         }else if(agent->m_state == GSNavAgentState::eFinishMove){
             
