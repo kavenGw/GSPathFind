@@ -37,7 +37,7 @@ void gsDrawLine(cocos2d::DrawNode* node,const GSNavPoint &point1, const GSNavPoi
     node->drawLine(Vec2(point1.x,point1.y), Vec2(point2.x,point2.y),fillColor);
 }
 
-void gsNavDrawScene(cocos2d::DrawNode* node,GSNavMesh* mesh)
+void gsNavDrawScene(cocos2d::DrawNode* node,GSNavMesh* mesh,GSNavCrowd* crowd)
 {
     node->clear();
     
@@ -50,7 +50,31 @@ void gsNavDrawScene(cocos2d::DrawNode* node,GSNavMesh* mesh)
     }
     
     //entity
-    
+    for(int i = 0 ; i < crowd->m_maxAgents;i++){
+        GSNavAgent* agent = &crowd->m_agents[i];
+        
+        if(agent->m_active == false){
+            continue;
+        }
+        
+        Color4F color = Color4F(1, 1, 1, 1);
+        if(agent->m_state == GSNavAgentState::eNone){
+        
+        }else if(agent->m_state == GSNavAgentState::eFindTarget){
+            color = Color4F(0,0,1,1);
+        }else if(agent->m_state == GSNavAgentState::eMoving){
+            color = Color4F(0,1,0,1);
+        }else if(agent->m_state == GSNavAgentState::eFinishMove){
+            color = Color4F(0,0,1,1);
+        }
+        
+        GSPolygon polygon;
+        polygon.points.push_back(GSNavPoint(agent->m_pos.x - agent->m_param.w / 2 , agent->m_pos.y - agent->m_param.h / 2));
+        polygon.points.push_back(GSNavPoint(agent->m_pos.x + agent->m_param.w / 2 , agent->m_pos.y - agent->m_param.h / 2));
+        polygon.points.push_back(GSNavPoint(agent->m_pos.x + agent->m_param.w / 2 , agent->m_pos.y + agent->m_param.h / 2));
+        polygon.points.push_back(GSNavPoint(agent->m_pos.x - agent->m_param.w / 2 , agent->m_pos.y + agent->m_param.h / 2));
+        gsDrawPolygon(node, polygon, color, 0, Color4F(0, 0, 0, 0));
+    }
     
     //navMesh
 }

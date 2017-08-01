@@ -103,7 +103,7 @@ bool GSNavTestScene::init()
 void GSNavTestScene::update(float dt)
 {
     _GSFind.update((int)(dt * 1000));
-    gsNavDrawScene(_drawNode, _GSFind.getNameMesh());
+    gsNavDrawScene(_drawNode, _GSFind.getNavMesh(), _GSFind.getCrowd());
 }
 
 void GSNavTestScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
@@ -130,9 +130,14 @@ void GSNavTestScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches,
     int nowSelectIndex = _group->getSelectedButtonIndex();
     
     if(nowSelectIndex == radioTypes::eAddAgent){
-    
+        GSNavAgentParams param;
+        param.w = w;
+        param.h = h;
+        param.m_speed = 1;
+        GSID id;
+        _GSFind.addAgent(GSNavPoint(pos.x,pos.y), param, id);
     }else if(nowSelectIndex == radioTypes::eRemoveAgent){
-    
+        
     }else if(nowSelectIndex == radioTypes::eAddObstacle){
         GSID id;
         _GSFind.addObstacle((int)pos.x,(int)pos.y,(int)w,(int)h, id);
@@ -143,7 +148,7 @@ void GSNavTestScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches,
     }else if(nowSelectIndex == radioTypes::eSelectAll){
     
     }else if(nowSelectIndex == radioTypes::eMove){
-    
+        _GSFind.moveAgent(0, GSNavPoint(pos.x,pos.y));
     }
 }
 

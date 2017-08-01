@@ -32,9 +32,11 @@ public:
     GSStatus addObstacle(const int midx,const int midy,const int w,const int h,GSID& id);
     GSStatus removeObstacle(const GSID id);
     
-    GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize = true);
+    GSStatus addAgent(const GSNavPoint& point,const GSNavAgentParams& param,GSID &idx);
+    void moveAgent(const GSID& idx,const GSNavPoint& targetPoint);
     
-    inline GSNavMesh* getNameMesh(){return &m_mesh;}
+    inline GSNavMesh* getNavMesh(){return &m_mesh;}
+    inline GSNavCrowd* getCrowd(){return &m_crowd;}
     
 };
 

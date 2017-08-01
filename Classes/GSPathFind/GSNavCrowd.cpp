@@ -8,9 +8,24 @@
 
 #include "GSNavCrowd.hpp"
 #include "GSAlloc.hpp"
+#include "GSNavMath.hpp"
+
+//GSNavAgentParams
+GSNavAgentParams::GSNavAgentParams():
+w(0),
+h(0),
+m_speed(0)
+{
+    
+}
 
 ///GSNavAgent
-GSNavAgent::GSNavAgent()
+GSNavAgent::GSNavAgent():
+m_active(false),
+m_id(0),
+m_pos(0,0),
+m_targetPos(0,0),
+m_state(GSNavAgentState::eNone)
 {
     
 }
@@ -24,7 +39,8 @@ GSNavAgent::~GSNavAgent()
 ///GSNavCrowd
 GSNavCrowd::GSNavCrowd():
 m_maxAgents(0),
-m_agents(0)
+m_agents(0),
+m_mesh(0)
 {
 }
 
@@ -35,8 +51,10 @@ GSNavCrowd::~GSNavCrowd()
     gsFree(m_agents);
 }
 
-GSStatus GSNavCrowd::init(int maxAgent)
+GSStatus GSNavCrowd::init(GSNavMesh* p_mesh,int maxAgent)
 {
+    this->m_mesh = p_mesh;
+    
     this->m_maxAgents = maxAgent;
     m_agents = (GSNavAgent*)gsAlloc(sizeof(GSNavAgent)*this->m_maxAgents);
     if (!m_agents){
@@ -63,8 +81,19 @@ void GSNavCrowd::update(int tick)
         if(agent->m_active == false){
             continue;
         }
-        
-        
+ 
+        if(agent->m_state == GSNavAgentState::eNone){
+            
+        }else if(agent->m_state == GSNavAgentState::eFindTarget){
+            m_mesh->findPath(agent->m_pos, agent->m_targetPos, agent->m_paths);
+            agent->m_state = GSNavAgentState::eMoving;
+        }else if(agent->m_state == GSNavAgentState::eMoving){
+            if(gsMove(agent->m_pos, agent->m_targetPos, agent->m_param.m_speed*tick)){
+                agent->m_state = GSNavAgentState::eFinishMove;
+            }
+        }else if(agent->m_state == GSNavAgentState::eFinishMove){
+            
+        }
     }
 }
 
@@ -79,6 +108,10 @@ GSNavAgent* GSNavCrowd::getNavAgent(const GSID& idx)
 
 GSStatus GSNavCrowd::addAgent(const GSNavPoint& point,const GSNavAgentParams& param,GSID &idx)
 {
+    if(param.w == 0 || param.h == 0){
+        return GS_FAILURE;
+    }
+    
     idx = -1;
     for (int i = 0; i < m_maxAgents; ++i)
     {
@@ -96,6 +129,7 @@ GSStatus GSNavCrowd::addAgent(const GSNavPoint& point,const GSNavAgentParams& pa
     memcpy(&(agent->m_param), &param, sizeof(GSNavAgentParams));
     
     agent->m_active = true;
+    agent->m_pos = point;
     
     return GS_SUCCESS;
 }
@@ -109,4 +143,17 @@ GSStatus GSNavCrowd::removeAgent(const GSID& idx)
     }
     
     return  GS_SUCCESS;
+}
+
+void GSNavCrowd::moveAgent(const GSID& idx,const GSNavPoint& targetPoint)
+{
+    GSNavAgent* agent = getNavAgent(idx);
+    
+    if(agent == NULL || agent->m_active == false){
+        return ;
+    }
+    
+    agent->m_targetPos = targetPoint;
+    
+    agent->m_state = GSNavAgentState::eFindTarget;
 }

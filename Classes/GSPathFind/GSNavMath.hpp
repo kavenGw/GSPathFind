@@ -15,5 +15,5 @@
 bool is_point_in_triangle(const GSNavPoint &s, const GSNavPoint &a, const GSNavPoint &b, const GSNavPoint &c);
 GSNavPoint get_closest_point_to_segment_2d(const GSNavPoint &p_point, const GSNavPoint &point1,const GSNavPoint&point2);
 
-bool move(GSNavPoint& nowPos,const GSNavPoint& start,const GSNavPoint &end,const int speed,const int t);
+bool gsMove(GSNavPoint& nowPos,const GSNavPoint &end,const int speed);
 #endif /* GSNavMath_hpp */

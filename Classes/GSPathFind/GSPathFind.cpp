@@ -10,7 +10,7 @@
 
 GSPathFind::GSPathFind()
 {
-    
+    m_crowd.init(&m_mesh, 200);
 }
 
 GSPathFind::~GSPathFind()
@@ -53,7 +53,12 @@ GSStatus GSPathFind::removeObstacle(const GSID id)
     return m_mesh.removeObstacle(id);
 }
 
-GSStatus GSPathFind::findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize)
+GSStatus GSPathFind::addAgent(const GSNavPoint& point,const GSNavAgentParams& param,GSID &idx)
 {
-    return m_mesh.findPath(start, end, paths, optimize);
+    return m_crowd.addAgent(point,param,idx);
+}
+
+void GSPathFind::moveAgent(const GSID& idx,const GSNavPoint& targetPoint)
+{
+    m_crowd.moveAgent(idx,targetPoint);
 }

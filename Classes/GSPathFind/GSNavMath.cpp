@@ -43,31 +43,38 @@ GSNavPoint get_closest_point_to_segment_2d(const GSNavPoint &p_point, const GSNa
         return point1 + n * d; // inside
 }
 
-bool _move(int &pos, const int &target, const int &v, const int &t)
+
+
+void gsFormatpos(int x, int& x2)
 {
-    int dis = target - pos;
-    int disABS = std::abs(dis);
-    
-    if(dis == 0){
-        return true;
-    }
-    
-    int move = v * t * disABS / dis;
-    if(disABS < std::abs(move))
+    if(x < 0.0f)
     {
-        pos = target;
-        return true;
-    }else{
-        pos = pos + move;
+        x2 = 0;
     }
-    
-    return false;
+    else
+    {
+        x2 = x;
+    }
 }
 
-bool move(GSNavPoint &nowPos, const GSNavPoint &start, const GSNavPoint &end, const int speed,const int t)
+bool gsMove(GSNavPoint &nowPos, const GSNavPoint &end, const int speed)
 {
-    bool resultx = _move(nowPos.x, end.x, speed, t);
-    bool resulty = _move(nowPos.y, end.y, speed, t);
     
-    return resultx && resulty;
+    int dx = end.x - nowPos.x;
+    int dy = end.y - nowPos.y;
+    
+    int d = dx*dx + dy*dy;
+    float speed_square = speed * speed;
+    
+    if(speed_square >= d)
+    {
+        nowPos = end;
+        return true;
+    }
+    
+    int sloop = sqrt(d);
+    gsFormatpos(nowPos.x + (dx*speed/sloop), nowPos.x);
+    gsFormatpos(nowPos.y + (dy*speed/sloop), nowPos.y);
+    
+    return false;
 }
