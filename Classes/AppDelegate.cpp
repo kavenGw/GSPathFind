@@ -1,12 +1,7 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "GSTest/GSNavTestScene.h"
 
 USING_NS_CC;
-
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
-static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 AppDelegate::AppDelegate() {
 
@@ -45,6 +40,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLViewImpl::create("GSPathFind");
 #endif
         director->setOpenGLView(glview);
+        
+        glview->setFrameSize(640, 960);
     }
 
     // turn on display FPS
@@ -75,7 +72,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = GSNavTestScene::createScene();
 
     // run
     director->runWithScene(scene);

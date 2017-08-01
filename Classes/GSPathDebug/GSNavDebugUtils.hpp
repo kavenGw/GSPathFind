@@ -13,9 +13,8 @@
 
 #include "GSNavData.hpp"
 
-void debugGSNavRect(const GSNavRect& rect);
+void debugGSNavPoint(const GSNavPoint& point);
 void debugGSNavEdge(const GSNavEdge& edge);
 void debugGSNavPolygon(const GSNavPolygon& polygon);
-void debugGSNavRect(const GSNavRect& rect);
 
 #endif /* GSNavDebugUtils_hpp */

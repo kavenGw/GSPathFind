@@ -21,23 +21,26 @@ GSNavMesh::~GSNavMesh()
     
 }
 
-void GSNavMesh::init(const GSNavPolygon &polygon)
+void GSNavMesh::init(const GSPolygon& polygon)
 {
+    m_polygon = polygon;
+    
     m_navObstacles.clear();
-    m_vertices.clear();
+    m_polygons.clear();
     m_connections.clear();
     
-    this->m_polygon = polygon;
-    
+    next_obstacle_Id = 0;
     this->m_state = GSNavMeshState::eNormal;
 }
-
 
 void GSNavMesh::update(int dt)
 {
     if(this->m_state == GSNavMeshState::eNormal){
         return;
     }
+    
+    m_polygons.clear();
+    m_connections.clear();
     
     std::vector<GSNavObstacle> &obstacles = m_navObstacles;
     
@@ -137,16 +140,35 @@ GSStatus GSNavMesh::getClosestPoint(const GSNavPoint& findPoint,GSNavPoint& targ
     return status;
 }
 
-GSStatus GSNavMesh::addObstacle(const GSNavPolygon& polygon,GSID& id)
+GSStatus GSNavMesh::addObstacle(const std::vector<GSNavPoint>& points,GSID& id)
 {
     this->m_state = GSNavMeshState::eNeedRefresh;
+    
+    GSNavObstacle obstacle;
+    obstacle.id = next_obstacle_Id++;
+    obstacle.alive = true;
+    obstacle.points = points;
+    m_navObstacles.push_back(obstacle);
+    
+    id = obstacle.id;
+    
     return GS_SUCCESS;
 }
 
 GSStatus GSNavMesh::removeObstacle(const GSID id)
 {
-    this->m_state = GSNavMeshState::eNeedRefresh;
-    return GS_SUCCESS;
+    for(int i = 0 ; i < m_navObstacles.size(); i ++){
+        GSNavObstacle& obstacle = m_navObstacles[i];
+        if(obstacle.id == id){
+            
+            m_navObstacles.erase(m_navObstacles.begin() + i);
+    
+            this->m_state = GSNavMeshState::eNeedRefresh;
+            return GS_SUCCESS;
+        }
+    }
+    
+    return  GS_FAILURE;
 }
 
 GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize)

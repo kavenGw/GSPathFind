@@ -1,7 +1,7 @@
 #GSPathFind
 A c++ RTS 2d game engine.
 include:
-* Navmesh finding
+* Navmesh finding and support agent size
 * Crowd Move And Collision
 * Dynamic obstacle
 

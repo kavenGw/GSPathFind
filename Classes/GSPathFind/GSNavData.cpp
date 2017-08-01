@@ -126,34 +126,6 @@ GSNavPolygon::GSNavPolygon()
 
 }
 
-//GSNavRect
-GSNavRect::GSNavRect()
-{
-
-}
-
-void GSNavRect::init(const int v_xmin, const int v_ymin, const int v_w, const int v_h)
-{
-    this->x_min = v_xmin;
-    this->y_min = v_ymin;
-    this->w = v_w;
-    this->h = v_h;
-    
-}
-
-void GSNavRect::init(const GSNavPoint& point,const int v_w,const int v_h)
-{
-    this->init(point.x - v_w/2, point.y - v_h/2, v_w, v_h);
-}
-
-void GSNavRect::refreshPoints()
-{
-    this->x_mid =x_min + w/2;
-    this->y_mid = y_min + h/2;
-    this->x_max = x_max + w;
-    this->y_max = y_min + h;
-}
-
 ///GSNavConnection
 GSNavConnection::GSNavConnection()
 {

@@ -26,14 +26,14 @@ public:
     //tick (ms)
     void update(int tick);
     
-    void createNavMesh(const GSNavPolygon& polygon);
+    void createNavMesh(const GSPolygon& polygon);
     
-    GSStatus addObstacle(const GSNavPolygon& polygon,GSID& id);
+    GSStatus addObstacle(const std::vector<GSNavPoint>& points,GSID& id);
     GSStatus removeObstacle(const GSID id);
     
     GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize = true);
     
-    
+    inline GSNavMesh* getNameMesh(){return &m_mesh;}
     
 };
 

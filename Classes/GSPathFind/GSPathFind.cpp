@@ -24,14 +24,14 @@ void GSPathFind::update(int tick)
     m_crowd.update(tick);
 }
 
-void GSPathFind::createNavMesh(const GSNavPolygon& polygon)
+void GSPathFind::createNavMesh(const GSPolygon& polygon)
 {
     m_mesh.init(polygon);
 }
 
-GSStatus GSPathFind::addObstacle(const GSNavPolygon& polygon,GSID& id)
+GSStatus GSPathFind::addObstacle(const std::vector<GSNavPoint>& points,GSID& id)
 {
-    return m_mesh.addObstacle(polygon, id);
+    return m_mesh.addObstacle(points, id);
 }
 
 GSStatus GSPathFind::removeObstacle(const GSID id)

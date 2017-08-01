@@ -117,22 +117,9 @@ public:
     int pre_edge;
 };
 
-class GSNavRect : public GSNavPolygon
-{
+class GSPolygon{
 public:
-    GSNavRect();
-    void init(const int v_xmin,const int v_ymin,const int v_w,const int v_h);
-    void init(const GSNavPoint& point,const int v_w,const int v_h);
-    void refreshPoints();
-
-    int x_min;
-    int y_min;
-    int x_max;
-    int y_max;
-    int x_mid;
-    int y_mid;
-    int w;
-    int h;
+    std::vector<GSNavPoint> points;
 };
 
 class GSNavConnection
@@ -153,6 +140,7 @@ class GSNavObstacle
 public:
     std::vector<GSNavPoint> points;
     GSID id;
+    bool alive;
 };
 
 #endif /* GSNavData_hpp */

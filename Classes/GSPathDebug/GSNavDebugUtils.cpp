@@ -26,11 +26,3 @@ void debugGSNavPolygon(const GSNavPolygon& polygon)
     }
     printf("--------------------");
 }
-
-void debugGSNavRect(const GSNavRect& rect)
-{
-    printf("debugGSNavRect--------");
-    debugGSNavPolygon(rect);
-    printf("xmin:%d ymin:%d xmid:%d ymid:%d xmax:%d ymax:%d w:%d h:%d",rect.x_min,rect.y_min,rect.x_mid,rect.y_mid,rect.x_max,rect.y_max,rect.w,rect.h);
-    printf("----------------------");
-}
