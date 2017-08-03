@@ -29,6 +29,7 @@ public:
     //dt (ms)
     void update(int dt);
     
+    void adjustPoint(std::vector<GSNavPoint>& points);
     GSStatus getClosestPoint(const GSNavPoint& point,GSNavPoint& targetPoint,GSNavPolygon* polygon);
     GSStatus addObstacle(const std::vector<GSNavPoint>& points,GSID& id);
     GSStatus removeObstacle(const GSID id);
@@ -38,6 +39,9 @@ public:
     std::vector<GSPolygon> m_gspolygons;
     std::vector<GSNavPolygon> m_polygons;
     std::vector<GSNavConnection> m_connections;
+    
+    GSNavPoint m_outsidePoint;
+    GSNavPoint m_outsidePointMin;
     
     GSID next_obstacle_Id;
     

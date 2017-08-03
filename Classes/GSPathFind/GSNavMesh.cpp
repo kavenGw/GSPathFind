@@ -10,6 +10,7 @@
 #include "GSNavLog.hpp"
 #include "GSNavMath.hpp"
 #include "GSNavTriangulator.hpp"
+#include "GSNavLog.hpp"
 
 ///GSNavMesh
 GSNavMesh::GSNavMesh()
@@ -45,27 +46,24 @@ void GSNavMesh::update(int dt)
     
     this->m_state = GSNavMeshState::eNormal;
     
-    m_polygons.clear();
     m_gspolygons.clear();
-    m_connections.clear();
     
     std::vector<TriangulatorPoly> in_Triangulator,out_triangulator;
     
     std::vector<GSNavObstacle> &obstacles = m_navObstacles;
-    
     //calculate outside
-    GSNavPoint outside_point(0,0);
-    
-    for(size_t obstacleIndex = 0 ; obstacleIndex < obstacles.size(); obstacleIndex++){
-        GSNavObstacle &obstacle = obstacles[obstacleIndex];
-        std::vector<GSNavPoint> &points = obstacle.polygon.points;
-        int pointsCount = points.size();
-        
-        for(int j = 0 ; j < pointsCount; j++){
-            outside_point.x = std::max(outside_point.x, points[j].x);
-            outside_point.y = std::max(outside_point.y, points[j].y);
-        }
-    }
+//    GSNavPoint outside_point(0,0);
+//    
+//    for(size_t obstacleIndex = 0 ; obstacleIndex < obstacles.size(); obstacleIndex++){
+//        GSNavObstacle &obstacle = obstacles[obstacleIndex];
+//        std::vector<GSNavPoint> &points = obstacle.polygon.points;
+//        int pointsCount = points.size();
+//        
+//        for(int j = 0 ; j < pointsCount; j++){
+//            outside_point.x = std::max(outside_point.x, points[j].x);
+//            outside_point.y = std::max(outside_point.y, points[j].y);
+//        }
+//    }
     
     //generate polygon
     for(size_t obstacleIndex = 0 ; obstacleIndex < obstacles.size(); obstacleIndex++){
@@ -85,7 +83,7 @@ void GSNavMesh::update(int dt)
             int pointsCount2 = points2.size();
             
             for(size_t l = 0 ; l < pointsCount2; l++){
-                if(segment_intersects_segment_2d(points[0], outside_point, points2[l], points2[(l+1)%pointsCount2], NULL)){
+                if(segment_intersects_segment_2d(points[0], m_outsidePoint, points2[l], points2[(l+1)%pointsCount2], NULL)){
                     interscount ++;
                 }
             }
@@ -111,8 +109,11 @@ void GSNavMesh::update(int dt)
     TriangulatorPartition tpart;
     if (tpart.ConvexPartition_HM(in_Triangulator, out_triangulator) == 0) {
         //failed!
+        GSNavLog::getInstance().addErrorLog("ConvexPartition_HM fail");
         return;
     }
+    m_polygons.clear();
+    m_connections.clear();
     
     for(size_t i = 0 ; i < out_triangulator.size(); i++){
         TriangulatorPoly &tp = out_triangulator[i];
@@ -199,6 +200,32 @@ void GSNavMesh::update(int dt)
     }
 }
 
+void GSNavMesh::adjustPoint(std::vector<GSNavPoint> &points)
+{
+    int pointsCount = points.size();
+    if(m_navObstacles.size() == 1){
+        m_outsidePoint.x = 0;
+        m_outsidePoint.y = 0;
+        m_outsidePointMin.x = INT_MAX;
+        m_outsidePointMin.y = INT_MAX;
+        //calculate outside
+        for(int j = 0 ; j < pointsCount; j++){
+            m_outsidePoint.x = std::max(m_outsidePoint.x, points[j].x );
+            m_outsidePoint.y = std::max(m_outsidePoint.y, points[j].y );
+            m_outsidePointMin.x = std::min(m_outsidePointMin.x, points[j].x );
+            m_outsidePointMin.y = std::min(m_outsidePointMin.y, points[j].y );
+        }
+    }else{
+        //clip outside
+        for(int j = 0 ; j < pointsCount; j++){
+            GSNavPoint &point = points[j];
+            point.x = std::min(m_outsidePoint.x - 1, point.x);
+            point.y = std::min(m_outsidePoint.y - 1, point.y);
+            point.x = std::max(m_outsidePointMin.x + 1, point.x);
+            point.y = std::max(m_outsidePointMin.y + 1, point.y);
+        }
+    }
+}
 
 GSStatus GSNavMesh::getClosestPoint(const GSNavPoint& findPoint,GSNavPoint& targetPoint,GSNavPolygon* targetPolygon)
 {
@@ -239,6 +266,8 @@ GSStatus GSNavMesh::addObstacle(const std::vector<GSNavPoint>& points,GSID& id)
     obstacle.alive = true;
     obstacle.polygon.points = points;
     m_navObstacles.push_back(obstacle);
+    
+    this->adjustPoint(m_navObstacles[m_navObstacles.size()-1].polygon.points);
     
     id = obstacle.id;
     
