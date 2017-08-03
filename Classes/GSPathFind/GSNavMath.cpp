@@ -34,7 +34,8 @@ bool segment_intersects_segment_2d(const GSNavPoint &p_from_a, const GSNavPoint 
     int ABlen = B.dot(B);
     if (ABlen <= 0)
         return false;
-    GSNavPoint Bn = B / ABlen;
+//    GSNavPoint Bn = B / ABlen;
+    GSNavPoint Bn(B.x * GSNavPrecision / ABlen,B.y * GSNavPrecision / ABlen);
     C = GSNavPoint(C.x * Bn.x + C.y * Bn.y, C.y * Bn.x - C.x * Bn.y);
     D = GSNavPoint(D.x * Bn.x + D.y * Bn.y, D.y * Bn.x - D.x * Bn.y);
     
@@ -44,12 +45,12 @@ bool segment_intersects_segment_2d(const GSNavPoint &p_from_a, const GSNavPoint 
     int ABpos = D.x + (C.x - D.x) * D.y / (D.y - C.y);
     
     //  Fail if segment C-D crosses line A-B outside of segment A-B.
-    if (ABpos < 0 || ABpos > 1.0)
+    if (ABpos < 0 || ABpos > 1 * GSNavPrecision )
         return false;
     
     //  (4) Apply the discovered position to line A-B in the original coordinate system.
     if (r_result)
-        *r_result = p_from_a + B * ABpos;
+        *r_result = p_from_a + GSNavPoint(B.x * ABpos / GSNavPrecision, B.y * ABpos / GSNavPrecision);
     
     return true;
 }
@@ -62,16 +63,16 @@ GSNavPoint get_closest_point_to_segment_2d(const GSNavPoint &p_point, const GSNa
     int l = n.length();
     if (l == 0)
         return point1; // both points are the same, just give any
-    n /= l;
-    
+    n = GSNavPoint(n.x * GSNavPrecision / l,n.y * GSNavPrecision / l);
+
     int d = n.dot(p);
     
     if (d <= 0)
         return point1; // before first point
-    else if (d >= l)
+    else if (d >= l * GSNavPrecision)
         return point2; // after first point
     else
-        return point1 + n * d; // inside
+        return point1 + GSNavPoint(n.x * d / GSNavPrecision,n.y * d / GSNavPrecision); // inside
 }
 
 
@@ -90,7 +91,6 @@ void gsFormatpos(int x, int& x2)
 
 bool gsMove(GSNavPoint &nowPos, const GSNavPoint &end, const int speed)
 {
-    
     int dx = end.x - nowPos.x;
     int dy = end.y - nowPos.y;
     

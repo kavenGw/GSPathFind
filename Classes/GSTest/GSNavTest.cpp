@@ -24,6 +24,9 @@ void gsDrawPolygon(cocos2d::DrawNode* node,const GSPolygon& polygon,const cocos2
 void gsDrawNavPolygon(cocos2d::DrawNode* node,const GSNavPolygon& polygon,const cocos2d::Color4F &fillColor,float borderWidth , const cocos2d::Color4F &borderColor )
 {
     size_t vertSize = polygon.edges.size();
+    if(vertSize == 0){
+        return;
+    }
     Vec2 verts[vertSize];
     for(int i = 0 ; i < vertSize; i++){
         const GSNavPoint &point = polygon.edges[i].point;

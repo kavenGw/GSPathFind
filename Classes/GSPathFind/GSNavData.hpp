@@ -34,6 +34,7 @@ inline void __swap_tmpl(T &x, T &y) {
 }
 
 typedef int GSID;
+static const int GSNavPrecision = 1000;
 
 class GSNavPoint
 {
@@ -58,9 +59,6 @@ public:
     GSNavPoint operator*(const int &rvalue) const;
     void operator*=(const int &rvalue);
     void operator*=(const GSNavPoint &rvalue) { *this = *this * rvalue; }
-    GSNavPoint operator/(const GSNavPoint &p_v1) const;
-    GSNavPoint operator/(const int &rvalue) const;
-    void operator/=(const int &rvalue);
     GSNavPoint operator-() const;
     
     

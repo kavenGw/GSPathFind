@@ -417,7 +417,10 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
         }
         
         if(least_cost_polygon!= NULL){
-            openList.erase(std::find(openList.begin(), openList.end(), least_cost_polygon));
+            std::vector<GSNavPolygon*>::iterator cost_polygon_itr = std::find(openList.begin(), openList.end(), least_cost_polygon);
+            if(cost_polygon_itr != openList.end()){
+                openList.erase(cost_polygon_itr);
+            }
         }
     }
     
@@ -435,13 +438,14 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
     
     paths.push_back(endPoint);
     while (true) {
-        int prev = polygon->pre_edge;
-        int prev_n = (prev + 1) & polygon->edges.size();
         
-        GSNavPoint point = (polygon->edges[prev].point + polygon->edges[prev_n].point) * 50 / 100;
+        GSNavPoint prep = polygon->edges[polygon->pre_edge].point;
+        GSNavPoint prep_n = polygon->edges[(polygon->pre_edge + 1) % polygon->edges.size()].point;
+        
+        GSNavPoint point ((prep.x + prep_n.x) / 2, (prep_n.y + prep.y) / 2);
         paths.push_back(point);
         
-        polygon = polygon->edges[prev].C;
+        polygon = polygon->edges[polygon->pre_edge].C;
         if(polygon == beginPolygon){
             break;
         }

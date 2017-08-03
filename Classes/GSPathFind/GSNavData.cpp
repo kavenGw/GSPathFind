@@ -35,14 +35,14 @@ int GSNavPoint::length() const
     return sqrt(x * x + y * y);
 }
 
-//bug
+//Cause result is always (0,0),so * GSNavPrecision
 GSNavPoint GSNavPoint::Normalize()
 {
     GSNavPoint r(this->x,this->y);
     int n = length();
     if(n!=0) {
-        r.x = r.x / n;
-        r.y = r.y / n;
+        r.x = r.x * GSNavPrecision / n;
+        r.y = r.y * GSNavPrecision / n;
     } else {
         r.x = 0;
         r.y = 0;
@@ -82,22 +82,6 @@ void GSNavPoint::operator*=(const int &rvalue) {
     
     x *= rvalue;
     y *= rvalue;
-};
-
-GSNavPoint GSNavPoint::operator/(const GSNavPoint &p_v1) const {
-    
-    return GSNavPoint(x / p_v1.x, y / p_v1.y);
-};
-
-GSNavPoint GSNavPoint::operator/(const int &rvalue) const {
-    
-    return GSNavPoint(x / rvalue, y / rvalue);
-};
-
-void GSNavPoint::operator/=(const int &rvalue) {
-    
-    x /= rvalue;
-    y /= rvalue;
 };
 
 GSNavPoint GSNavPoint::operator-() const {

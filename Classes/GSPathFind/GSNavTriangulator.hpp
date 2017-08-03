@@ -28,7 +28,6 @@ public:
     ~TriangulatorPoly();
     
     TriangulatorPoly(const TriangulatorPoly &src);
-    TriangulatorPoly& operator=(const TriangulatorPoly &src);
     
     //getters and setters
     long GetNumPoints() {

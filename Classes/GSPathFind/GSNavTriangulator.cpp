@@ -43,13 +43,6 @@ TriangulatorPoly::TriangulatorPoly(const TriangulatorPoly &src) {
     points = src.points;
 }
 
-TriangulatorPoly& TriangulatorPoly::operator=(const TriangulatorPoly &src) {
-    Clear();
-    hole = src.hole;
-    points = src.points;
-    return *this;
-}
-
 GSNavPoint& TriangulatorPoly::operator[](int i){
     if(i>=points.size()){
         points.push_back(GSNavPoint(0,0));
@@ -233,8 +226,12 @@ int TriangulatorPartition::RemoveHoles(std::vector<TriangulatorPoly> &inpolys, s
             i2++;
         }
         
-        polys.erase(holeiter);
-        polys.erase(polyiter);
+        if(holeiter != polys.end()){
+            holeiter = polys.erase(holeiter);
+        }
+        if(polyiter != polys.end()){
+            polyiter = polys.erase(polyiter);
+        }
         polys.push_back(newpoly);
     }
     
