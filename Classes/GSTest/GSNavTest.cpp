@@ -24,7 +24,7 @@ void gsDrawPolygon(cocos2d::DrawNode* node,const GSPolygon& polygon,const cocos2
 void gsDrawNavPolygon(cocos2d::DrawNode* node,const GSNavPolygon& polygon,const cocos2d::Color4F &fillColor,float borderWidth , const cocos2d::Color4F &borderColor )
 {
     size_t vertSize = polygon.edges.size();
-    if(vertSize == 0){
+    if(vertSize < 3){
         return;
     }
     Vec2 verts[vertSize];
@@ -32,6 +32,12 @@ void gsDrawNavPolygon(cocos2d::DrawNode* node,const GSNavPolygon& polygon,const 
         const GSNavPoint &point = polygon.edges[i].point;
         verts[i] = Vec2(point.x,point.y);
     }
+    
+    for(int i = 0; i < vertSize; i++){
+        
+        node->drawLine(verts[i], verts[(i+1)%polygon.edges.size()], Color4F(1,1,1,1));
+    }
+    
     node->drawPolygon(verts, vertSize, fillColor, borderWidth, borderColor);
 }
 
@@ -48,7 +54,7 @@ void gsNavDrawScene(cocos2d::DrawNode* node,GSNavMesh* mesh,GSNavCrowd* crowd)
     gsDrawNavPolygon(node, mesh->m_polygons[0],Color4F(1.0f, 1.0f, 1.0f, 0.0f), 2, Color4F(1.0f,1.0f,1.0f,1.0f));
     
     //obstacle
-    for(int i = 1 ; i < mesh->m_polygons.size(); i ++){
+    for(int i = 0 ; i < mesh->m_polygons.size(); i ++){
         gsDrawNavPolygon(node, mesh->m_polygons[i], Color4F(1.0f,0.0f,0.0f,1.0f),0,Color4F(0,0,0,0));
     }
     

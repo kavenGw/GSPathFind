@@ -91,8 +91,8 @@ void GSNavCrowd::update(int tick)
             if(agent->m_paths.size() == 0){
                 agent->m_state = GSNavAgentState::eFinishMove;
             }else{
-                if(gsMove(agent->m_pos, agent->m_paths[0], agent->m_param.m_speed*tick)){
-                    agent->m_paths.erase(agent->m_paths.begin());
+                if(gsMove(agent->m_pos, agent->m_paths[agent->m_paths.size()-1], agent->m_param.m_speed*tick)){
+                    agent->m_paths.erase(agent->m_paths.end()-1);
                 }
             }
         }else if(agent->m_state == GSNavAgentState::eFinishMove){

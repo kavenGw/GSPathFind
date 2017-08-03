@@ -37,8 +37,7 @@ public:
     std::vector<GSNavObstacle> m_navObstacles;
     std::vector<GSPolygon> m_gspolygons;
     std::vector<GSNavPolygon> m_polygons;
-    std::map<GSNavEdgeKey, GSNavConnection> m_connections;
-    std::vector<GSNavPoint> m_vertices;
+    std::vector<GSNavConnection> m_connections;
     
     GSID next_obstacle_Id;
     

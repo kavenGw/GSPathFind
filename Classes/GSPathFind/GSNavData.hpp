@@ -76,9 +76,7 @@ class GSNavEdgeKey
 public:
     GSNavPoint a;
     GSNavPoint b;
-    bool operator<(const GSNavEdgeKey &p_key) const {
-        return (a == p_key.a) ? (b < p_key.b) : (a < p_key.a);
-    };
+    bool operator==(const GSNavEdgeKey &p_key) const;
     GSNavEdgeKey(const GSNavPoint &p_a = GSNavPoint(), const GSNavPoint &p_b = GSNavPoint());
 };
 
@@ -134,6 +132,8 @@ public:
     std::vector<GSNavConnectionPending> pending;
     
     GSNavConnection();
+    
+    GSNavEdgeKey edgeKey;
 };
 
 class GSNavObstacle

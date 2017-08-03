@@ -105,6 +105,11 @@ GSNavEdgeKey::GSNavEdgeKey(const GSNavPoint &p_a, const GSNavPoint &p_b)
     b = p_b;
 }
 
+bool GSNavEdgeKey::operator==(const GSNavEdgeKey &p_key) const
+{
+    return (a == p_key.a && b == p_key.b) || (a == p_key.b && b == p_key.a);
+}
+
 ///GSNavConnectionPending
 GSNavConnectionPending::GSNavConnectionPending()
 {
