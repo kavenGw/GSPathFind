@@ -35,6 +35,21 @@ int GSNavPoint::length() const
     return sqrt(x * x + y * y);
 }
 
+//bug
+GSNavPoint GSNavPoint::Normalize()
+{
+    GSNavPoint r(this->x,this->y);
+    int n = length();
+    if(n!=0) {
+        r.x = r.x / n;
+        r.y = r.y / n;
+    } else {
+        r.x = 0;
+        r.y = 0;
+    }
+    return r;
+}
+
 GSNavPoint GSNavPoint::operator+(const GSNavPoint &p_v) const {
     
     return GSNavPoint(x + p_v.x, y + p_v.y);

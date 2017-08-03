@@ -9,6 +9,7 @@
 #include "GSNavMesh.hpp"
 #include "GSNavLog.hpp"
 #include "GSNavMath.hpp"
+#include "GSNavTriangulator.hpp"
 
 ///GSNavMesh
 GSNavMesh::GSNavMesh()
@@ -26,7 +27,9 @@ void GSNavMesh::init(const GSPolygon& polygon)
     
     m_navObstacles.clear();
     m_polygons.clear();
+    m_gspolygons.clear();
     m_connections.clear();
+    m_vertices.clear();
     
     next_obstacle_Id = 0;
     this->m_state = GSNavMeshState::eNormal;
@@ -42,14 +45,100 @@ void GSNavMesh::update(int dt)
     }
     
     m_polygons.clear();
+    m_gspolygons.clear();
     m_connections.clear();
+    m_vertices.clear();
+    
+    std::vector<TriangulatorPoly> in_Triangulator,out_triangulator;
     
     std::vector<GSNavObstacle> &obstacles = m_navObstacles;
     
+    //calculate outside
+    GSNavPoint outside_point(0,0);
+    
     for(size_t obstacleIndex = 0 ; obstacleIndex < obstacles.size(); obstacleIndex++){
         GSNavObstacle &obstacle = obstacles[obstacleIndex];
+        std::vector<GSNavPoint> &points = obstacle.polygon.points;
+        int pointsCount = points.size();
         
-        std::vector<GSNavPoint> &points = obstacle.points;
+        for(int j = 0 ; j < pointsCount; j++){
+            outside_point.x = std::max(outside_point.x, points[j].x);
+            outside_point.y = std::max(outside_point.y, points[j].y);
+        }
+    }
+    
+    //generate polygon
+    for(size_t obstacleIndex = 0 ; obstacleIndex < obstacles.size(); obstacleIndex++){
+        GSNavObstacle &obstacle = obstacles[obstacleIndex];
+        std::vector<GSNavPoint> &points = obstacle.polygon.points;
+        int pointsCount = points.size();
+        
+        int interscount = 0;
+        
+        for(size_t obstacleIndex2 = 0 ; obstacleIndex2 < obstacles.size(); obstacleIndex2++){
+            if(obstacleIndex2 == obstacleIndex){
+                continue;
+            }
+            
+            GSNavObstacle &obstacle2 = obstacles[obstacleIndex2];
+            std::vector<GSNavPoint> &points2 = obstacle2.polygon.points;
+            int pointsCount2 = points2.size();
+            
+            for(size_t l = 0 ; l < pointsCount2; l++){
+                if(segment_intersects_segment_2d(points[0], outside_point, points2[l], points2[(l+1)%pointsCount2], NULL)){
+                    interscount ++;
+                }
+            }
+        }
+        
+        bool outer = (interscount % 2) == 0;
+        
+        TriangulatorPoly triangulator;
+        for(int j = 0 ; j < points.size() ; j++){
+            triangulator[j] = points[j];
+        }
+        
+        if(outer){
+            triangulator.SetOrientation(TRIANGULATOR_CCW);
+        }else{
+            triangulator.SetOrientation(TRIANGULATOR_CW);
+            triangulator.SetHole(true);
+        }
+        
+        in_Triangulator.push_back(triangulator);
+    }
+    
+    TriangulatorPartition tpart;
+    if (tpart.ConvexPartition_HM(in_Triangulator, out_triangulator) == 0) {
+        //failed!
+        return;
+    }
+    
+    std::map<GSNavPoint, int> points;
+    for(size_t i = 0 ; i < out_triangulator.size(); i++){
+        TriangulatorPoly &tp = out_triangulator[i];
+        
+        GSPolygon p;
+        
+        for (int i = 0; i < tp.GetNumPoints(); i++) {
+            
+            std::map<GSNavPoint, int>::iterator iter= points.find(tp[i]);
+            if (iter == points.end()) {
+                points[tp[i]] = m_vertices.size();
+                m_vertices.push_back(tp[i]);
+                p.points.push_back(tp[i]);
+            }else{
+                p.points.push_back(iter->first);
+            }
+        }
+        
+        m_gspolygons.push_back(p);
+    }
+    
+    for(size_t gsPolygonIndex = 0 ; gsPolygonIndex < m_gspolygons.size(); gsPolygonIndex++){
+        GSPolygon &gspolygon = m_gspolygons[gsPolygonIndex];
+        
+        std::vector<GSNavPoint> &points = gspolygon.points;
         int pointsCount = points.size();
         
         GSNavPolygon newPolygon;
@@ -151,7 +240,7 @@ GSStatus GSNavMesh::addObstacle(const std::vector<GSNavPoint>& points,GSID& id)
     GSNavObstacle obstacle;
     obstacle.id = next_obstacle_Id++;
     obstacle.alive = true;
-    obstacle.points = points;
+    obstacle.polygon.points = points;
     m_navObstacles.push_back(obstacle);
     
     id = obstacle.id;

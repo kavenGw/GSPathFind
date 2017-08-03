@@ -35,8 +35,10 @@ public:
     GSStatus findPath(const GSNavPoint& start,const GSNavPoint &end,std::vector<GSNavPoint> &paths,bool optimize = true);
     
     std::vector<GSNavObstacle> m_navObstacles;
+    std::vector<GSPolygon> m_gspolygons;
     std::vector<GSNavPolygon> m_polygons;
     std::map<GSNavEdgeKey, GSNavConnection> m_connections;
+    std::vector<GSNavPoint> m_vertices;
     
     GSID next_obstacle_Id;
     

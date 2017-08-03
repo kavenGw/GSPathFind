@@ -38,6 +38,7 @@ typedef int GSID;
 class GSNavPoint
 {
 public:
+    
     struct {
         int x ;
         int y ;
@@ -47,6 +48,7 @@ public:
     int distance_squared_to(const GSNavPoint &p_GSNavPoint) const;
     int dot(const GSNavPoint &p_other) const;
     int length() const;
+    GSNavPoint Normalize();
     
     GSNavPoint operator+(const GSNavPoint &p_v) const;
     void operator+=(const GSNavPoint &p_v);
@@ -60,6 +62,7 @@ public:
     GSNavPoint operator/(const int &rvalue) const;
     void operator/=(const int &rvalue);
     GSNavPoint operator-() const;
+    
     
     bool operator==(const GSNavPoint &p_vec2) const;
     bool operator!=(const GSNavPoint &p_vec2) const;
@@ -138,7 +141,7 @@ public:
 class GSNavObstacle
 {
 public:
-    std::vector<GSNavPoint> points;
+    GSPolygon polygon;
     GSID id;
     bool alive;
 };

@@ -24,18 +24,49 @@ bool is_point_in_triangle(const GSNavPoint &s, const GSNavPoint &a, const GSNavP
 
 
 
+bool segment_intersects_segment_2d(const GSNavPoint &p_from_a, const GSNavPoint &p_to_a, const GSNavPoint &p_from_b, const GSNavPoint &p_to_b, GSNavPoint *r_result)
+{
+    
+    GSNavPoint B = p_to_a - p_from_a;
+    GSNavPoint C = p_from_b - p_from_a;
+    GSNavPoint D = p_to_b - p_from_a;
+    
+    int ABlen = B.dot(B);
+    if (ABlen <= 0)
+        return false;
+    GSNavPoint Bn = B / ABlen;
+    C = GSNavPoint(C.x * Bn.x + C.y * Bn.y, C.y * Bn.x - C.x * Bn.y);
+    D = GSNavPoint(D.x * Bn.x + D.y * Bn.y, D.y * Bn.x - D.x * Bn.y);
+    
+    if ((C.y < 0 && D.y < 0) || (C.y >= 0 && D.y >= 0))
+        return false;
+    
+    int ABpos = D.x + (C.x - D.x) * D.y / (D.y - C.y);
+    
+    //  Fail if segment C-D crosses line A-B outside of segment A-B.
+    if (ABpos < 0 || ABpos > 1.0)
+        return false;
+    
+    //  (4) Apply the discovered position to line A-B in the original coordinate system.
+    if (r_result)
+        *r_result = p_from_a + B * ABpos;
+    
+    return true;
+}
+
+
 GSNavPoint get_closest_point_to_segment_2d(const GSNavPoint &p_point, const GSNavPoint &point1,const GSNavPoint&point2)
 {
     GSNavPoint p = p_point - point1;
     GSNavPoint n = point2 - point1;
     int l = n.length();
-    if (l < 1e-10)
+    if (l == 0)
         return point1; // both points are the same, just give any
     n /= l;
     
     int d = n.dot(p);
     
-    if (d <= 0.0)
+    if (d <= 0)
         return point1; // before first point
     else if (d >= l)
         return point2; // after first point
