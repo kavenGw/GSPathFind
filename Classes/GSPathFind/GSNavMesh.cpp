@@ -11,6 +11,8 @@
 #include "GSNavMath.hpp"
 #include "GSNavTriangulator.hpp"
 #include "GSNavLog.hpp"
+#include <algorithm>
+#include <limits.h>
 
 ///GSNavMesh
 GSNavMesh::GSNavMesh()
@@ -92,7 +94,7 @@ void GSNavMesh::update(int dt)
         bool outer = (interscount % 2) == 0;
         
         TriangulatorPoly triangulator;
-        for(int j = 0 ; j < points.size() ; j++){
+        for(int j = 0 ; j < pointsCount ; j++){
             triangulator[j] = points[j];
         }
         
@@ -371,7 +373,10 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
         
         if(edge.C){
             edge.C->pre_edge = edge.C_edge;
-            edge.C->distance = beginPolygon->center.distance_to(edge.C->center);
+            
+            GSNavPoint entry = get_closest_point_to_segment_2d(beginPolygon->entry, beginPolygon->edges[i].point, beginPolygon->edges[(i+1)%beginPolygon->edges.size()].point);
+            beginPolygon->edges[i].C->distance = beginPolygon->entry.distance_to(entry);
+            beginPolygon->edges[i].C->entry = entry;
             
             openList.push_back(edge.C);
             
@@ -409,7 +414,8 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
                     continue;
                 }
                 
-                float distance = least_cost_polygon->center.distance_to(edge.C->center) + least_cost_polygon->distance;
+                GSNavPoint edge_entry = get_closest_point_to_segment_2d(least_cost_polygon->entry, least_cost_polygon->edges[edgeIndex].point, least_cost_polygon->edges[(edgeIndex+1)%least_cost_polygon->edges.size()].point);
+                float distance = least_cost_polygon->entry.distance_to(edge_entry) + least_cost_polygon->distance;
                 
                 
                 if (edge.C->pre_edge != -1) {
@@ -419,12 +425,14 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
                         
                         edge.C->pre_edge = edge.C_edge;
                         edge.C->distance = distance;
+                        edge.C->entry = edge_entry;
                     }
                 } else {
                     //add to open neighbours
                     
                     edge.C->pre_edge = edge.C_edge;
                     edge.C->distance = distance;
+                    edge.C->entry = edge_entry;
                     
                     openList.push_back(edge.C);
                     

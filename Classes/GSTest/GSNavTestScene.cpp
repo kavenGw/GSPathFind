@@ -141,6 +141,7 @@ void GSNavTestScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches,
     }else if(nowSelectIndex == radioTypes::eAddObstacle){
         GSID id;
         _GSFind.addObstacle((int)pos.x,(int)pos.y,(int)w,(int)h, id);
+//        _GSFind.addObstacle(489, 281, (int)w, (int)h, id);
     }else if(nowSelectIndex == radioTypes::eRemoveObstacle){
     
     }else if(nowSelectIndex == radioTypes::eSelect){

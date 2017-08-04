@@ -51,7 +51,7 @@ void gsNavDrawScene(cocos2d::DrawNode* node,GSNavMesh* mesh,GSNavCrowd* crowd)
     node->clear();
     
     //border
-    gsDrawNavPolygon(node, mesh->m_polygons[0],Color4F(1.0f, 1.0f, 1.0f, 0.0f), 2, Color4F(1.0f,1.0f,1.0f,1.0f));
+//    gsDrawNavPolygon(node, mesh->m_polygons[0],Color4F(1.0f, 1.0f, 1.0f, 0.0f), 2, Color4F(1.0f,1.0f,1.0f,1.0f));
     
     //obstacle
     for(int i = 0 ; i < mesh->m_polygons.size(); i ++){

@@ -10,6 +10,7 @@
 #define GSAlloc_hpp
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void* gsAlloc(size_t size);
 void gsFree(void* ptr);

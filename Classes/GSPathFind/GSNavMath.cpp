@@ -7,6 +7,7 @@
 //
 
 #include "GSNavMath.hpp"
+#include <math.h>
 
 bool is_point_in_triangle(const GSNavPoint &s, const GSNavPoint &a, const GSNavPoint &b, const GSNavPoint &c)
 {

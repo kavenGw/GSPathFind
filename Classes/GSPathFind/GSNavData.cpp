@@ -7,6 +7,7 @@
 //
 
 #include "GSNavData.hpp"
+#include <math.h>
 
 ///GSNavPoint
 GSNavPoint::GSNavPoint(int v_x,int v_y)

@@ -9,6 +9,7 @@
 #include "GSNavCrowd.hpp"
 #include "GSAlloc.hpp"
 #include "GSNavMath.hpp"
+#include <string.h>
 
 //GSNavAgentParams
 GSNavAgentParams::GSNavAgentParams():

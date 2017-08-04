@@ -308,7 +308,7 @@ void TriangulatorPartition::UpdateVertex(PartitionVertex *v, PartitionVertex *ve
     
     vec1 = (v1->p - v->p).Normalize();
     vec3 = (v3->p - v->p).Normalize();
-    v->angle = vec1.x*vec3.x + vec1.y*vec3.y;
+    v->angle = vec1.x*vec3.x  + vec1.y*vec3.y ;
     
     if(v->isConvex) {
         v->isEar = true;

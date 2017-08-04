@@ -10,6 +10,7 @@
 #define GSNavLog_hpp
 
 #include <stdio.h>
+#include <stdarg.h>
 
 enum gsNavLogCategory
 {
