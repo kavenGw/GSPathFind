@@ -90,9 +90,19 @@ void gsFormatpos(int x, int& x2)
     }
 }
 
-bool gsMove(GSNavPoint &nowPos, const GSNavPoint &end, const int speed)
+bool gsMove(GSNavPoint& nowPos,const GSNavPoint &end,int& leftSpeed,GSNavPoint& leftPos, const GSNavPoint& const_speed,const int tick)
 {
-    int dx = end.x - nowPos.x;
+    if(const_speed.x == 0){
+        leftSpeed = 0;
+        nowPos = end;
+        return true;
+    }
+    
+    leftSpeed += const_speed.y * tick;
+    
+    int speed = leftSpeed / 1000;
+    
+    int dx = (end.x - nowPos.x) * const_speed.y / const_speed.x;
     int dy = end.y - nowPos.y;
     
     int d = dx*dx + dy*dy;
@@ -100,13 +110,26 @@ bool gsMove(GSNavPoint &nowPos, const GSNavPoint &end, const int speed)
     
     if(speed_square >= d)
     {
+        leftSpeed = 0;
         nowPos = end;
         return true;
     }
+    leftSpeed = leftSpeed - speed * 1000;
+    
+    leftPos += GSNavPoint(dx*speed*const_speed.x/const_speed.y,dy*speed);
     
     int sloop = sqrt(d);
-    gsFormatpos(nowPos.x + (dx*speed/sloop), nowPos.x);
-    gsFormatpos(nowPos.y + (dy*speed/sloop), nowPos.y);
+    
+    if(abs(leftPos.x) >= sloop){
+        gsFormatpos(nowPos.x + (leftPos.x/sloop), nowPos.x);
+        leftPos.x = leftPos.x % sloop;
+    }
+    
+    if(abs(leftPos.y) >= sloop){
+        gsFormatpos(nowPos.y + (leftPos.y/sloop), nowPos.y);
+        leftPos.y = leftPos.y % sloop;
+    }
+    
     
     return false;
 }

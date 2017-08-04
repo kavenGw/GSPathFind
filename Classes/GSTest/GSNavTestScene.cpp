@@ -133,7 +133,8 @@ void GSNavTestScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches,
         GSNavAgentParams param;
         param.w = w;
         param.h = h;
-        param.m_speed = 1;
+        param.m_speed.x = 100;
+        param.m_speed.y = param.m_speed.x * navMeshSize.height / navMeshSize.width;
         GSID id;
         _GSFind.addAgent(GSNavPoint(pos.x,pos.y), param, id);
     }else if(nowSelectIndex == radioTypes::eRemoveAgent){

@@ -52,7 +52,7 @@ GSNavPoint& TriangulatorPoly::operator[](int i){
 }
 
 int TriangulatorPoly::GetOrientation() {
-    long i1,i2;
+    size_t i1,i2;
     int area = 0;
     for(i1=0; i1<points.size(); i1++) {
         i2 = (i1+1) % points.size();
@@ -71,7 +71,7 @@ void TriangulatorPoly::SetOrientation(int orientation) {
 }
 
 void TriangulatorPoly::Invert() {
-    long i;
+    size_t i;
     std::vector<GSNavPoint> invpoints;
     
     for(i=0;i<points.size();i++) {

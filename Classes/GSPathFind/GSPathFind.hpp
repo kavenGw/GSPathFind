@@ -33,10 +33,21 @@ public:
     GSStatus removeObstacle(const GSID id);
     
     GSStatus addAgent(const GSNavPoint& point,const GSNavAgentParams& param,GSID &idx);
-    void moveAgent(const GSID& idx,const GSNavPoint& targetPoint);
+    GSStatus removeAgent(GSID &idx);
+    GSStatus moveAgent(const GSID& idx,const GSNavPoint& targetPoint);
+    GSStatus stop(const GSID& id);
+    GSStatus changeAgentSpeed(const GSID& id,const int newSpeedx,const int newSpeedy);
     
     inline GSNavMesh* getNavMesh(){return &m_mesh;}
     inline GSNavCrowd* getCrowd(){return &m_crowd;}
+    
+    GSNavAgent* getAgents()
+    {
+        return m_crowd.m_agents;
+    };
+    int getMaxAgents(){
+        return m_crowd.m_maxAgents;
+    };
     
 };
 

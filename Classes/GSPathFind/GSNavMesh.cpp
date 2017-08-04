@@ -82,7 +82,7 @@ void GSNavMesh::update(int dt)
             
             GSNavObstacle &obstacle2 = obstacles[obstacleIndex2];
             std::vector<GSNavPoint> &points2 = obstacle2.polygon.points;
-            int pointsCount2 = points2.size();
+            size_t pointsCount2 = points2.size();
             
             for(size_t l = 0 ; l < pointsCount2; l++){
                 if(segment_intersects_segment_2d(points[0], m_outsidePoint, points2[l], points2[(l+1)%pointsCount2], NULL)){
@@ -278,7 +278,7 @@ GSStatus GSNavMesh::addObstacle(const std::vector<GSNavPoint>& points,GSID& id)
 
 GSStatus GSNavMesh::removeObstacle(const GSID id)
 {
-    for(int i = 0 ; i < m_navObstacles.size(); i ++){
+    for(size_t i = 0 ; i < m_navObstacles.size(); i ++){
         GSNavObstacle& obstacle = m_navObstacles[i];
         if(obstacle.id == id){
             
@@ -308,7 +308,7 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
         GSNavPolygon &polygon = m_polygons[polygonIndex];
         
         if(begin_d || end_d){
-            for(int i = 2; i < polygon.edges.size(); i++){
+            for(size_t i = 2; i < polygon.edges.size(); i++){
                 if(begin_d > 0){
                     if(is_point_in_triangle(start, polygon.edges[0].point, polygon.edges[i-1].point, polygon.edges[i].point)){
                         beginPolygon = &polygon;
@@ -368,7 +368,7 @@ GSStatus GSNavMesh::findPath(const GSNavPoint& start,const GSNavPoint &end,std::
     
     beginPolygon->entry = start;
     
-    for(int i = 0 ; i < beginPolygon->edges.size();i++){
+    for(size_t i = 0 ; i < beginPolygon->edges.size();i++){
         GSNavEdge &edge = beginPolygon->edges[i];
         
         if(edge.C){

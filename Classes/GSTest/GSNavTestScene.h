@@ -14,7 +14,7 @@ static cocos2d::Size smallResolutionSize = cocos2d::Size(640, 960);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
-static cocos2d::Size navMeshSize = cocos2d::Size(500, 500);
+static cocos2d::Size navMeshSize = cocos2d::Size(800, 500);
 enum radioTypes
 {
     eAddAgent = 0,

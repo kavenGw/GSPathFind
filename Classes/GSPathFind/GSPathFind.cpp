@@ -58,7 +58,22 @@ GSStatus GSPathFind::addAgent(const GSNavPoint& point,const GSNavAgentParams& pa
     return m_crowd.addAgent(point,param,idx);
 }
 
-void GSPathFind::moveAgent(const GSID& idx,const GSNavPoint& targetPoint)
+GSStatus GSPathFind::removeAgent(GSID &idx)
 {
-    m_crowd.moveAgent(idx,targetPoint);
+    return m_crowd.removeAgent(idx);
+}
+
+GSStatus GSPathFind::stop(const GSID& idx)
+{
+    return m_crowd.stop(idx);
+}
+
+GSStatus GSPathFind::changeAgentSpeed(const GSID& idx,const int newSpeedx,const int newSpeedy)
+{
+    return m_crowd.changeAgentSpeed(idx,newSpeedx,newSpeedy);
+}
+
+GSStatus GSPathFind::moveAgent(const GSID& idx,const GSNavPoint& targetPoint)
+{
+    return m_crowd.moveAgent(idx,targetPoint);
 }

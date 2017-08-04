@@ -18,7 +18,7 @@ class GSNavAgentParams
 public:
     int w;
     int h;
-    int m_speed;
+    GSNavPoint m_speed;
 
     GSNavAgentParams();
 };
@@ -39,6 +39,9 @@ public:
     GSNavPoint m_pos;
     GSNavPoint m_targetPos;
     
+    int m_leftSpeed;
+    GSNavPoint m_leftPos;
+    
     std::vector<GSNavPoint> m_paths;
     
     GSNavAgentParams m_param;
@@ -46,6 +49,8 @@ public:
     
     GSNavAgent();
     ~GSNavAgent();
+    
+    GSNavPoint getNextTargetPoint();
 };
 
 class GSNavCrowd
@@ -62,7 +67,9 @@ public:
     GSNavAgent* getNavAgent(const GSID& idx);
     GSStatus addAgent(const GSNavPoint& point,const GSNavAgentParams& param,GSID &idx);
     GSStatus removeAgent(const GSID& idx);
-    void moveAgent(const GSID& idx,const GSNavPoint& targetPoint);
+    GSStatus moveAgent(const GSID& idx,const GSNavPoint& targetPoint);
+    GSStatus changeAgentSpeed(const GSID& idx,const int newSpeedx,const int newSpeedy);
+    GSStatus stop(const GSID& idx);
     
     int m_maxAgents;
     GSNavAgent* m_agents;
