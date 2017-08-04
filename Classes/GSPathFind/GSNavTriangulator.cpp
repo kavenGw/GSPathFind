@@ -115,8 +115,8 @@ int TriangulatorPartition::Intersects(GSNavPoint &p11, GSNavPoint &p12, GSNavPoi
     v = p12-p21;
     dot12 = v.x*v2ort.x + v.y*v2ort.y;
     
-    if(dot11*dot12>0) return 0;
-    if(dot21*dot22>0) return 0;
+    if((dot11 > 0 && dot12 > 0) || (dot11 < 0 || dot12 < 0)) return 0;
+    if((dot21 > 0 && dot22 > 0) || (dot21 < 0 || dot22 < 0)) return 0;
     
     return 1;
 }
