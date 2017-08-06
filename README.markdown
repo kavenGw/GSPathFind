@@ -12,3 +12,6 @@ Demo based on Cocos V3.10
 [RecastNavigation](https://github.com/recastnavigation/recastnavigation)
 [godot](https://github.com/godotengine/godot)
 
+#Contact me
+kavengw@gmail.com
+
